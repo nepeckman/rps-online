@@ -1,0 +1,33 @@
+app
+(app)
+(app nil)
+page
+(app "clicks")
+(app #(true))
+quit
+r-app
+quit
+(rum-render-html app)
+(rum/render-html app)
+(rum/render-html page)
+rum/render-html
+(rum/render-html title)
+title
+(title
+)
+(rum/render-html (title))
+(rum/render-html (page))
+(rum/render-html (app))
+(rum/render-html (r-app))
+(require 'rps-online.core :reload)
+(rum/render-html (page))
+(require 'rps-online.core :reload)
+(rum/render-html (page))
+(require 'rps-online.core :reload)
+(rum/render-html (page))
+(require 'rps-online.core :reload)
+(rum/render-html (page))
+(str (rum/render-html (page)) js-files)
+quit
+(start-repl)
+quit
