@@ -17,8 +17,9 @@
    [com.cemerick/piggieback "0.2.1" :scope "test"]
 
    ;; Server deps
-   [aleph "0.4.1"]
+   [http-kit "2.2.0"]
    [compojure "1.5.1"]
+   [com.stuartsierra/component "0.3.1"]
 
    ;; App deps
    [rum "0.10.5"]
@@ -27,19 +28,15 @@
 (require '[adzerk.boot-cljs :refer [cljs]]
          '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
          '[adzerk.boot-reload :refer [reload]]
+         '[com.stuartsierra.component :as component]
          'rps-online.core)
 
-(deftask start-server []
-  (with-pass-thru _
-    (rps-online.core/main)))
-
-(deftask dev
+(deftask dev-front
   []
   (comp
-    (start-server)
+    (component/start (rps-online.core/server-system {:port 3000}))
     (watch)
     (reload)
-    (cljs-repl)
     (cljs)
     (target :dir #{"target"})))
 

@@ -1,9 +1,7 @@
 (ns rps-online.hello
   (:require [rum.core :as rum]))
 
-(defn getElementById
-  [element]
-  (.getElementById js/document element))
+#?(:clj (def js-files "<script type=\"text/javascript\" src=\"main.js\"></script>"))
 
 (rum/defc title
           []
@@ -15,15 +13,11 @@
             [:div {:on-click #(swap! local-atom inc)}
              label ": " @local-atom]))
 
-(rum/defc r-app
-          []
-          [:div (title) (counter "Clicks")])
-
-(rum/defc page
+(rum/defc app
           []
           [:div
             [:h1 "hello"]
-            [:div {:id "app"} (r-app)]])
+            [:div (title) (counter "Clicks")]])
 
-#?(:clj  (def app (rum/render-html (page)))
-   :cljs (rum/mount (page) (js/document.querySelector "[data-reactroot]")))
+#?(:clj  (def app-markup (rum/render-html (app)))
+   :cljs (rum/mount (app) (js/document.querySelector "[data-reactroot]")))
