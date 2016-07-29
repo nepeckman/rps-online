@@ -15,7 +15,7 @@
   []
   (routing/routes
     (route/files "" {:root "target"})
-    (route/not-found "Not Found")))
+    (route/not-found "Not Found!")))
 
 (defrecord AppHandler []
   component/Lifecycle
@@ -30,9 +30,11 @@
 (defrecord WebServer [app port]
   component/Lifecycle
   (start [this]
+         (println (str "Starting server on port " port))
          (assoc this :http-server (http/run-server (:handler app) {:port port})))
   (stop [this]
         (when-let [http-server (:http-server this)]
+          (println "Stopping server")
           (http-server)
           (dissoc this :http-server))))
 

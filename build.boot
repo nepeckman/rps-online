@@ -23,18 +23,17 @@
 
    ;; App deps
    [rum "0.10.5"]
+   [com.taoensso/sente "1.10.0"]
    ])
 
 (require '[adzerk.boot-cljs :refer [cljs]]
          '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
          '[adzerk.boot-reload :refer [reload]]
-         '[com.stuartsierra.component :as component]
-         'rps-online.core)
+         'dev)
 
-(deftask dev-front
+(deftask dev
   []
   (comp
-    (component/start (rps-online.core/server-system {:port 3000}))
     (watch)
     (reload)
     (cljs)
@@ -42,4 +41,4 @@
 
 (deftask dev-repl
   []
-  (repl :init-ns 'rps-online.core))
+  (repl :init-ns 'dev))
