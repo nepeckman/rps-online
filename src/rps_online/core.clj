@@ -1,4 +1,5 @@
 (ns rps-online.core
+  (:gen-class)
   (:require [compojure.core :as routing]
             [compojure.route :as route]
             [org.httpkit.server :as http]
@@ -47,3 +48,14 @@
     :app (new-app-handler)
     :server (component/using (new-server (:port config))
                              [:app])))
+
+(defn recieve-input
+  []
+  (let [input (read-line)]
+    (println input))
+  (recieve-input))
+
+(defn main
+  []
+  (component/start (server-system {:port 3000}))
+  (recieve-input))

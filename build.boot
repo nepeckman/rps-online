@@ -29,7 +29,15 @@
 (require '[adzerk.boot-cljs :refer [cljs]]
          '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
          '[adzerk.boot-reload :refer [reload]]
+         'rps-online.core
          'dev)
+
+(task-options!
+  pom {:project 'rps-online
+       :version "0.0.1"}
+  aot {:all true}
+  uber {:as-jars true}
+  web {:serve 'rps-online.core/main})
 
 (deftask dev
   []
@@ -42,3 +50,13 @@
 (deftask dev-repl
   []
   (repl :init-ns 'dev))
+
+(deftask build
+  []
+  (comp
+    (cljs :optimizations :advanced)
+    (target :dir #{"target"})))
+
+(deftask uberwar
+  []
+  (comp (aot) (pom) (web) (uber) (war) (target :dir #{"deploy"})))
