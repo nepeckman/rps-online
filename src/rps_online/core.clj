@@ -5,7 +5,6 @@
             [com.stuartsierra.component :as component]
             [rps-online.hello :as hello]))
 
-
 (defn hello-handler
   []
   (routing/routes
@@ -15,7 +14,7 @@
   []
   (routing/routes
     (route/files "" {:root "target"})
-    (route/not-found "Not Found!")))
+    (route/not-found "Not Found!!")))
 
 (defrecord AppHandler []
   component/Lifecycle

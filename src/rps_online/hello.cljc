@@ -5,7 +5,7 @@
 
 (rum/defc title
           []
-          [:div "This is the title"])
+          [:div "This is the title!!"])
 
 (rum/defcs counter < (rum/local 0 ::key)
           [state label]
