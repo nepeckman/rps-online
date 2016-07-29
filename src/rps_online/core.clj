@@ -1,10 +1,10 @@
 (ns rps-online.core
-  (:gen-class)
   (:require [compojure.core :as routing]
             [compojure.route :as route]
             [org.httpkit.server :as http]
             [com.stuartsierra.component :as component]
-            [rps-online.hello :as hello]))
+            [rps-online.hello :as hello])
+  (:gen-class))
 
 (defn hello-handler
   []
@@ -55,7 +55,7 @@
     (println input))
   (recieve-input))
 
-(defn main
+(defn -main
   []
   (component/start (server-system {:port 3000}))
   (recieve-input))

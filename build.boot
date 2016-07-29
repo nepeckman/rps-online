@@ -1,6 +1,6 @@
 (set-env!
  :source-paths #{"src"}
- :resource-paths #{"resources"}
+ :resource-paths #{"resources" "src"}
  :dependencies
  '[[adzerk/boot-cljs "1.7.228-1" :scope "test"]
    [adzerk/boot-cljs-repl "0.3.2" :scope "test"]
@@ -37,7 +37,9 @@
        :version "0.0.1"}
   aot {:all true}
   uber {:as-jars true}
-  web {:serve 'rps-online.core/main})
+  web {:serve 'rps-online.core/main}
+  jar {:main 'rps-online.core
+       :manifest {"Description" "RPS ONLINE"}})
 
 (deftask dev
   []
@@ -57,6 +59,6 @@
     (cljs :optimizations :advanced)
     (target :dir #{"target"})))
 
-(deftask uberwar
+(deftask uberjar
   []
-  (comp (aot) (pom) (web) (uber) (war) (target :dir #{"deploy"})))
+  (comp (aot) (pom) (uber) (jar) (target :dir #{"deploy-test"})))
