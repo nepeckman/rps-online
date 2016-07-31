@@ -18,6 +18,7 @@
 
    ;; Server deps
    [http-kit "2.2.0"]
+   [ring "1.5.0"]
    [compojure "1.5.1"]
    [com.stuartsierra/component "0.3.1"]
 
