@@ -7,9 +7,9 @@
 
 (def namespace-deps
   [
-    {:name "rps-online.hello" :deps []}
-    {:name "rps-online.core" :deps ['[rps-online.hello :as hello]]}
-    {:name "dev" :deps ['[rps-online.core]]}])
+    {:name "rps-online.chat" :deps []}
+    {:name "rps-online.core" :deps ['[rps-online.chat :as chat]]}
+    {:name "dev" :deps ['[rps-online.core :as rps]]}])
 
 (defn reload-namespaces
   "Uses the namespace dependancy map to reload every namespace, and reload their dependancies"

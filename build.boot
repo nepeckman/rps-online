@@ -19,6 +19,7 @@
    ;; Server deps
    [http-kit "2.2.0"]
    [ring "1.5.0"]
+   [ring/ring-defaults "0.2.1"]
    [compojure "1.5.1"]
    [com.stuartsierra/component "0.3.1"]
 
