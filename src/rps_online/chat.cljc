@@ -4,12 +4,7 @@
 
 #?(:cljs (enable-console-print!))
 
-(defn getElementById
-  [id]
-  #?@(:clj  [println id]
-      :cljs [.getElementById js/document id]))
-
-(declare chsk ch-chsk chsk-send!)
+(declare chsk ch-chsk chsk-send! getElementById)
 (defmulti event-msg-handler :id)
 
 #?(:cljs (let [{:keys [chsk ch-recv send-fn state]} (sente/make-channel-socket! "/chsk" {:type :auto})]
@@ -20,7 +15,15 @@
 
 #?(:cljs (defmethod event-msg-handler :chsk/recv
            [{:as ev-msg :keys [event ?data]}]
-           (println (get ?data 0))))
+           (println (get ?data 1))))
+
+#?(:cljs (defmethod event-msg-handler :chsk/handshake
+           [{:as ev-msg :keys [event ?data]}]
+           (println "Connection started!")))
+
+#?(:cljs (defmethod event-msg-handler :chsk/state
+           [{:as ev-msg :keys [event ?data]}]
+           (println "Channel socket state change")))
 
 #?(:cljs (defmethod event-msg-handler :default
            [{:as ev-msg :keys [event]}]
@@ -28,6 +31,10 @@
            (println event)))
 
 #?(:cljs (sente/start-client-chsk-router! ch-chsk event-msg-handler))
+
+#?(:cljs (defn getElementById
+           [id]
+           (.getElementById js/document id)))
 
 (rum/defc title
           []
@@ -39,7 +46,7 @@
 
 (rum/defc send-btn
           []
-          [:button {:on-click #(println (.-value (getElementById "msg-box")))} "Send!"])
+          [:button {:on-click #(chsk-send! [:client/message {:msg (.-value (getElementById "msg-box"))}])} "Send!"])
 
 (rum/defc app
           []
