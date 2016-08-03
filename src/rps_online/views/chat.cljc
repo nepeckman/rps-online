@@ -1,4 +1,4 @@
-(ns rps-online.chat
+(ns rps-online.views.chat
   (:require [rum.core :as rum]
             [taoensso.sente  :as sente]))
 

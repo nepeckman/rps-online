@@ -1,14 +1,26 @@
 (ns dev
   (:require [com.stuartsierra.component :as component]
             [clojure.tools.namespace.repl :refer (refresh refresh-all)]
-            [rps-online.core :as rps]))
+            [rps-online.core :as rps]
+            [rps-online.events :as events]))
 
 (def dev-system {})
 
 (def namespace-deps
   [
-    {:name "rps-online.chat" :deps []}
-    {:name "rps-online.core" :deps ['[rps-online.chat :as chat]]}
+    {:name "rps-online.views.chat" :deps []}
+    {:name "rps-online.endpoints.chsk" :deps []}
+    {:name "rps-online.endpoints.chat" :deps ['[rps-online.views.chat :as view]]}
+    {:name "rps-online.events" :deps []}
+    {:name "rps-online.handler" :deps []}
+    {:name "rps-online.server" :deps []}
+    {:name "rps-online.websockets" :deps []}
+    {:name "rps-online.core" :deps ['[rps-online.server :as server]
+                                    '[rps-online.endpoints.chat :as chat]
+                                    '[rps-online.endpoints.chsk :as chsk]
+                                    '[rps-online.handler :as handler]
+                                    '[rps-online.websockets :as websockets]
+                                    '[rps-online.events :as events]]}
     {:name "dev" :deps ['[rps-online.core :as rps]]}])
 
 (defn reload-namespaces
@@ -24,7 +36,7 @@
 
 (def system-config
   {:server {:port 3000}
-   :websocket-event-handler {:event-handler rps/event-msg-handler}})
+   :websocket-event-handler {:event-handler events/event-msg-handler}})
 
 (defn init
   "Load a new server system into the dev-system var"
