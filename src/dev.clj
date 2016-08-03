@@ -22,11 +22,15 @@
       (require dep :reload)))
   (ns dev))
 
+(def system-config
+  {:server {:port 3000}
+   :websocket-event-handler {:event-handler rps/event-msg-handler}})
+
 (defn init
   "Load a new server system into the dev-system var"
   []
   (println "Trying to init the system")
-  (alter-var-root #'dev-system (constantly (rps/server-system {:port 3000}))))
+  (alter-var-root #'dev-system (constantly (rps/server-system system-config))))
 
 (defn start
   "Starts the server system in the dev-system var"
