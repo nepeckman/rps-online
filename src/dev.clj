@@ -2,7 +2,13 @@
   (:require [com.stuartsierra.component :as component]
             [clojure.tools.namespace.repl :refer (refresh refresh-all)]
             [rps-online.core :as rps]
-            [rps-online.events :as events]))
+            [rps-online.events]
+            [rps-online.server]
+            [rps-online.websockets]
+            [rps-online.handler]
+            [rps-online.views.chat]
+            [rps-online.endpoints.chsk]
+            [rps-online.endpoints.chat]))
 
 (def dev-system {})
 
@@ -21,7 +27,14 @@
                                     '[rps-online.handler :as handler]
                                     '[rps-online.websockets :as websockets]
                                     '[rps-online.events :as events]]}
-    {:name "dev" :deps ['[rps-online.core :as rps]]}])
+    {:name "dev" :deps ['[rps-online.core :as rps]
+                        '[rps-online.events]
+                        '[rps-online.server]
+                        '[rps-online.websockets]
+                        '[rps-online.handler]
+                        '[rps-online.views.chat]
+                        '[rps-online.endpoints.chsk]
+                        '[rps-online.endpoints.chat]]}])
 
 (defn reload-namespaces
   "Uses the namespace dependancy map to reload every namespace, and reload their dependancies"
@@ -36,7 +49,8 @@
 
 (def system-config
   {:server {:port 3000}
-   :websocket-event-handler {:event-handler events/event-msg-handler}})
+   :websocket-event-handler {:event-handler rps-online.events/event-msg-handler}
+   :channel-socket-server {:user-id-fn rps-online.websockets/id-user}})
 
 (defn init
   "Load a new server system into the dev-system var"

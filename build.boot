@@ -22,6 +22,7 @@
    [ring/ring-defaults "0.2.1"]
    [compojure "1.5.1"]
    [com.stuartsierra/component "0.3.1"]
+   [org.clojure/core.async "0.2.385"]
 
    ;; App deps
    [rum "0.10.5"]

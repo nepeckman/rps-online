@@ -11,7 +11,7 @@
 (defn server-system
   [config]
   (component/system-map
-    :channel-socket-server (websockets/new-channel-socket-server)
+    :channel-socket-server (websockets/new-channel-socket-server (get-in config [:channel-socket-server :user-id-fn]))
     :websocket-event-handler (component/using (events/new-websocket-event-handler (get-in config [:websocket-event-handler :event-handler]))
                                               [:channel-socket-server])
     :chat-endpoint (chat/new-chat-endpoint)

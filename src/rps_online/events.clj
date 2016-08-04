@@ -8,31 +8,31 @@
     (channel-send-fn uid [:server/message message])))
 
 (defn dispatcher
-  [send-fn connected-uids event]
+  [channel-socket-server event]
   (:id event))
 
 (defmulti -event-msg-handler dispatcher)
 
 (defmethod -event-msg-handler :client/message
-  [channel-send-fn connected-uids {:as ev-msg :keys [event id ?data uid]}]
+  [channel-socket-server {:as ev-msg :keys [event id ?data uid]}]
   (println ?data)
   (println uid)
-  (send-message! channel-send-fn connected-uids (:msg ?data)))
+  (send-message! (:chsk-send! channel-socket-server) (:connected-uids channel-socket-server) (:msg ?data)))
 
 (defmethod -event-msg-handler :default
-  [channel-send-fn connected-uids {:as ev-msg :keys [event id]}]
+  [channel-socket-server {:as ev-msg :keys [event id]}]
   (println event)
   (println id))
 
 (defn event-msg-handler
-  [channel-send-fn connected-uids event]
-  (-event-msg-handler channel-send-fn connected-uids event))
+  [channel-socket-server event]
+  (-event-msg-handler channel-socket-server event))
 
 (defrecord WebsocketEventHandler [channel-socket-server event-handler]
   component/Lifecycle
   (start [this]
          (println "Starting websocket event handler")
-         (assoc this :router (sente/start-server-chsk-router! (:ch-chsk channel-socket-server) (partial event-handler (:chsk-send! channel-socket-server) (:connected-uids channel-socket-server)))))
+         (assoc this :router (sente/start-server-chsk-router! (:ch-chsk channel-socket-server) (partial event-handler channel-socket-server))))
   (stop [this]
         (when-let [router (:router this)]
           (println "Stopping websocket event handler")
