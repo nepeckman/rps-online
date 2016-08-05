@@ -1,11 +1,11 @@
 (ns rps-online.views.chat
   #?(:clj (:require [rum.core :as rum]
-                    [datascript.core :as d]
+                    [rps-online.client.data :as data]
                     [clojure.core.async :as async :refer [go go-loop]])
      :cljs (:require [rum.core :as rum]
-                     [datascript.core :as d]
+                     [rps-online.client.data :as data]
                      [cljs.core.async :as async]
-                     [rps-online.client.handlers  :as handlers :refer [chsk-send! message-chan]]))
+                     [rps-online.client.subscribers  :as subscibers :refer [chsk-send! message-chan]]))
   #?(:cljs (:require-macros [cljs.core.async.macros :refer [go go-loop]])))
 
 #?(:cljs (enable-console-print!))
@@ -14,12 +14,6 @@
 
 #?(:clj (def message-chan (async/chan)))
 
-(def messages (atom []))
-
-(go-loop []
-         (let [{:keys [event ?data]} (async/<! message-chan)]
-           (swap! messages conj (get ?data 1)))
-         (recur))
 
 #?(:cljs (defn getElementById
            [id]
@@ -39,9 +33,8 @@
 
 (rum/defc message-comp < rum/reactive
           []
-          [:div (for [message (rum/react messages)
-                      :let [n (.indexOf (rum/react messages) message)]]
-                  [:div {:key n} message])])
+          [:div (let [db (rum/react data/conn)]
+                  (data/query-db '[:find ?t :where [_ :message/text ?t]] db))])
 
 (rum/defc app
           []

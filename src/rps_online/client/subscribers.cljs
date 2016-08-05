@@ -1,4 +1,4 @@
-(ns rps-online.client.handlers
+(ns rps-online.client.subscribers
   (:require [taoensso.sente  :as sente]
             [cljs.core.async :as async :refer [>! <! put! chan]]
             [datascript.core :as d])
@@ -17,3 +17,9 @@
 (def message-chan (chan))
 
 (async/sub server-pub :chsk/recv message-chan)
+
+(def event-input-chan (chan))
+(def new-message-chan (chan))
+
+(def event-pub (async/pub event-input-chan :event))
+(async/sub event-pub :new-message new-message-chan)
