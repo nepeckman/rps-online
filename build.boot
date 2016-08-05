@@ -27,6 +27,8 @@
    ;; App deps
    [rum "0.10.5"]
    [com.taoensso/sente "1.10.0"]
+   [datascript "0.15.0"]
+   [datascript-transit "0.2.0"]
    ])
 
 (require '[adzerk.boot-cljs :refer [cljs]]

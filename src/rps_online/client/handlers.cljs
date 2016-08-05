@@ -1,5 +1,8 @@
 (ns rps-online.client.handlers
-  (:require [taoensso.sente  :as sente]))
+  (:require [taoensso.sente  :as sente]
+            [cljs.core.async :as async :refer [>! <! put! chan]]
+            [datascript.core :as d])
+  (:require-macros [cljs.core.async.macros :as asyncm :refer [go go-loop]]))
 
 (enable-console-print!)
 
@@ -9,23 +12,8 @@
               (def chsk-send! send-fn)
               (def chsk-state state))
 
-(defmulti event-msg-handler :id)
+(def server-pub (async/pub ch-chsk :id))
 
-(defmethod event-msg-handler :chsk/recv
-           [{:as ev-msg :keys [event ?data]}]
-           (println (get ?data 1)))
+(def message-chan (chan))
 
-(defmethod event-msg-handler :chsk/handshake
-           [{:as ev-msg :keys [event ?data]}]
-           (println "Connection started!"))
-
-(defmethod event-msg-handler :chsk/state
-           [{:as ev-msg :keys [event ?data]}]
-           (println "Channel socket state change"))
-
-(defmethod event-msg-handler :default
-           [{:as ev-msg :keys [event]}]
-           (println "Unhandled Event")
-           (println event))
-
-(sente/start-client-chsk-router! ch-chsk event-msg-handler)
+(async/sub server-pub :chsk/recv message-chan)
