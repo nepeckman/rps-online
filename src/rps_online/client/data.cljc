@@ -15,10 +15,10 @@
   (d/q query db))
 
 (defn create-entity
-  [entity db]
-  (d/transact! db [entity]))
+  [entity conn]
+  (d/transact! conn [entity]))
 
 (go-loop []
          (let [{:keys [event ?data]} (async/<! message-chan)]
-           (create-entity {:message/id (rand-int 1000) :message/text (get ?data 1)} @conn))
+           (create-entity {:message/id (rand-int 1000) :message/text (get ?data 1)} conn))
          (recur))

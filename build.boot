@@ -23,12 +23,14 @@
    [compojure "1.5.1"]
    [com.stuartsierra/component "0.3.1"]
    [org.clojure/core.async "0.2.385"]
+   [clj-time "0.12.0"]
 
    ;; App deps
    [rum "0.10.5"]
    [com.taoensso/sente "1.10.0"]
    [datascript "0.15.0"]
    [datascript-transit "0.2.0"]
+   [com.andrewmcveigh/cljs-time "0.4.0"]
    ])
 
 (require '[adzerk.boot-cljs :refer [cljs]]
@@ -51,6 +53,7 @@
   (comp
     (watch)
     (reload)
+    (cljs-repl)
     (cljs)
     (target :dir #{"target"})))
 

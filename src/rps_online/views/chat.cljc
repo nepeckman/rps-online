@@ -1,16 +1,19 @@
 (ns rps-online.views.chat
   #?(:clj (:require [rum.core :as rum]
                     [rps-online.client.data :as data]
-                    [clojure.core.async :as async :refer [go go-loop]])
+                    [clojure.core.async :as async]
+                    [clj-time.core :as t]
+                    [clj-time.coerce :as c])
      :cljs (:require [rum.core :as rum]
                      [rps-online.client.data :as data]
                      [cljs.core.async :as async]
-                     [rps-online.client.subscribers  :as subscibers :refer [chsk-send! message-chan]]))
-  #?(:cljs (:require-macros [cljs.core.async.macros :refer [go go-loop]])))
+                     [rps-online.client.subscribers :as subscibers :refer [fire-event message-chan]]
+                     [cljs-time.core :as t]
+                     [cljs-time.coerce :as c])))
 
 #?(:cljs (enable-console-print!))
 
-#?(:clj (declare chsk-send! getElementById))
+#?(:clj (declare fire-event getElementById))
 
 #?(:clj (def message-chan (async/chan)))
 
@@ -18,6 +21,13 @@
 #?(:cljs (defn getElementById
            [id]
            (.getElementById js/document id)))
+
+(defn message-data
+  []
+  (let [msg (.-value (getElementById "msg-box"))
+        date (c/to-long (t/now))]
+    {:msg msg
+     :date date}))
 
 (rum/defc title
           []
@@ -29,12 +39,16 @@
 
 (rum/defc send-btn
           []
-          [:button {:on-click #(chsk-send! [:client/message {:msg (.-value (getElementById "msg-box"))}])} "Send!"])
+          [:button {:on-click #(fire-event {:event :send-message :data [:client/message (message-data)]})} "Send!"])
 
 (rum/defc message-comp < rum/reactive
           []
-          [:div (let [db (rum/react data/conn)]
-                  (data/query-db '[:find ?t :where [_ :message/text ?t]] db))])
+          [:div (let [db (rum/react data/conn)
+                      message-set (data/query-db '[:find ?t :where [_ :message/text ?t]] db)
+                      messages (into [] message-set)]
+                  (for [message messages
+                        :let [n (.indexOf messages message)]]
+                    [:div {:key n} message]))])
 
 (rum/defc app
           []
