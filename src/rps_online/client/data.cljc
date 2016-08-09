@@ -8,6 +8,8 @@
 
 #?(:clj (def message-chan (async/chan)))
 
+#?(:cljs (enable-console-print!))
+
 (def conn (d/create-conn {:message/id {:db/unique :db.unique/identity}}))
 
 (defn query-db
@@ -19,6 +21,7 @@
   (d/transact! conn [entity]))
 
 (go-loop []
-         (let [{:keys [event ?data]} (async/<! message-chan)]
-           (create-entity {:message/id (rand-int 1000) :message/text (get ?data 1)} conn))
+         (let [{:keys [event ?data]} (async/<! message-chan)
+               data (get ?data 1)]
+           (create-entity {:message/id (:date data) :message/date (:date data) :message/text (:msg data)} conn))
          (recur))

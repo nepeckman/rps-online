@@ -44,11 +44,11 @@
 (rum/defc message-comp < rum/reactive
           []
           [:div (let [db (rum/react data/conn)
-                      message-set (data/query-db '[:find ?t :where [_ :message/text ?t]] db)
+                      message-set (data/query-db '[:find ?text ?time :where [?e :message/text ?text] [?e :message/date ?time]] db)
                       messages (into [] message-set)]
                   (for [message messages
                         :let [n (.indexOf messages message)]]
-                    [:div {:key n} message]))])
+                    [:div {:key n} (-> (get message 1) (c/from-long) (c/to-date) (.toTimeString)) " someone: " (first message)]))])
 
 (rum/defc app
           []

@@ -3,9 +3,9 @@
             [com.stuartsierra.component :as component]))
 
 (defn send-message!
-  [channel-send-fn connected-uids message]
+  [channel-send-fn connected-uids data]
   (doseq [uid (:any @connected-uids)]
-    (channel-send-fn uid [:server/message message])))
+    (channel-send-fn uid [:server/message data])))
 
 (defn dispatcher
   [channel-socket-server event]
@@ -17,7 +17,7 @@
   [channel-socket-server {:as ev-msg :keys [event id ?data uid]}]
   (println ?data)
   (println uid)
-  (send-message! (:chsk-send! channel-socket-server) (:connected-uids channel-socket-server) (:msg ?data)))
+  (send-message! (:chsk-send! channel-socket-server) (:connected-uids channel-socket-server) ?data))
 
 (defmethod -event-msg-handler :default
   [channel-socket-server {:as ev-msg :keys [event id]}]
